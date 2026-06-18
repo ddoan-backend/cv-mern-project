@@ -1,6 +1,9 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import { connectDB } from './lib/db.js'
+import authRoute from './routes/authRoutes.js'
+import cookiePaser from 'cookie-parser'
+import { protectdRoute } from './middlewares/authMiddlewares.js'
 dotenv.config()
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -8,8 +11,14 @@ const PORT = process.env.PORT || 3000
 
 //middlewares
 app.use(express.json())
-
-
+app.use(cookiePaser())
+//public route
+app.use('/api/auth' , authRoute)
+//private route
+app.get('/api/me', protectdRoute, (req, res) => {
+    res.status(200).json(req.user)
+})
+app.use(protectdRoute)
 // connect database before listen POrt
 connectDB().then(()=>{
 app.listen(PORT , () =>{
