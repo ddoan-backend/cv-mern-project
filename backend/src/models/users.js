@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const staffSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
     name:{type:String , required:true},
     email:{type:String , required:true , unique:true},
     password:{type:String , required:true},
@@ -13,4 +13,4 @@ const staffSchema = new mongoose.Schema({
     isActive:{type:Boolean , default:true}
 },{timestamps:true})
 
-export default mongoose.model('staff' , staffSchema)
+export default mongoose.model('user' , UserSchema)
