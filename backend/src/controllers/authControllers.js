@@ -46,7 +46,11 @@ export const signIn = async(req , res)=>{
             maxAge:REFRESH_TOKEN_TTL
         })
         //return accesstoken
-        return res.status(200).json({message:`người dùng ${userSignIn.name} đã đăng nhập` , accessToken})
+        return res.status(200).json({message:`người dùng ${userSignIn.name} đã đăng nhập` , accessToken , user:{
+            id: userSignIn._id,
+            name: userSignIn.name,
+            role: userSignIn.role
+        }})
     } catch (error) {
         console.error('lỗi khi gọi signin' , error)
         return res.status(500).json({message:'lỗi hệ thống'})

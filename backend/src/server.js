@@ -4,6 +4,7 @@ import { connectDB } from './lib/db.js'
 import authRoute from './routes/authRoutes.js'
 import cookiePaser from 'cookie-parser'
 import { protectdRoute } from './middlewares/authMiddlewares.js'
+import cors from 'cors'
 dotenv.config()
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -12,6 +13,7 @@ const PORT = process.env.PORT || 3000
 //middlewares
 app.use(express.json())
 app.use(cookiePaser())
+app.use(cors({origin:process.env.CLIENT_URL , credentials:true}))
 //public route
 app.use('/api/auth' , authRoute)
 //private route
