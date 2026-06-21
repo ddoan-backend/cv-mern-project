@@ -30,6 +30,8 @@ export const signIn = async(req , res)=>{
         const accessToken =  jwt.sign({userId:userSignIn._id , role: userSignIn.role} , process.env.SECRET_KEY_TOKEN,{expiresIn:ACCESS_TOKEN_TTL})
         //create refreshtoken
         const refreshTK = await crypto.randomBytes(64).toString('hex')
+        //delete refresh token
+        await refreshtoken.deleteMany({userId:userSignIn._id})
         //save refreshToken to db
         await refreshtoken.create({
             userId:userSignIn._id,

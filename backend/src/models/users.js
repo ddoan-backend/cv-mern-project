@@ -10,6 +10,10 @@ const UserSchema = new mongoose.Schema({
         enum:['staff' , 'admin'],
         default:'staff'
     },
+    shift:{
+        type:String,
+        default:"morning"
+    },
     isActive:{type:Boolean , default:true}
 },{timestamps:true})
 

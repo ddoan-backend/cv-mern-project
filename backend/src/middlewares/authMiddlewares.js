@@ -30,3 +30,11 @@ export const protectdRoute = (req,res,next)=>{
         return res.status(500).json({message:'lỗi hệ thống'})
     }
 }
+
+//verify admin
+export const VerifyAdmin = (req ,res, next) =>{
+    if(req.user.role !== "admin"){
+        return res.status(403).json({message:"không có quyền sử dụng"})
+    }
+    next()
+}
