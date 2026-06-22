@@ -1,16 +1,17 @@
 import User from "../models/users.js";
+import bcrypt from 'bcrypt'
 
 export const CreateStaff = async (req, res) => {
     try {
-        const staff = await User.create({
-            ...req.body,
-            role: "staff"
-        });
+        const {password,...rest} = req.body
+        const hashedPassword = await bcrypt.hash(password , 10)
 
-        return res.status(201).json({
-            message: "Tạo nhân viên thành công",
-            staff
-        });
+        const staff = await User.create({
+            ...rest,
+            password:hashedPassword,
+            role:"staff"
+        })
+        return res.status(200).json({message:"tạo thành công nhân viên" , staff})
     } catch (error) {
         return res.status(500).json({
             message: error.message
