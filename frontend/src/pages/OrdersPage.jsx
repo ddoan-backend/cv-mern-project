@@ -1,236 +1,87 @@
-import { ArrowLeft } from "lucide-react";
-import {useNavigate} from 'react-router'
+import { Search, ShoppingCart} from "lucide-react"
+import ListFood from "@/components/ListFood"
+import { useState  } from "react"
+import CartDrawer from "../components/CartPage.jsx"
+import { useMainMenu } from "@/Context/MainMenu/UseMainMenu.js"
+import { useCart } from "@/Context/Cart/UseCart.js"
 
 export default function OrdersPage() {
-
-const navigate = useNavigate()
+  const [openCart , setOpenCart] = useState(false)
+  const {categories , search ,setSearch ,category , setCategory} = useMainMenu()
+  const {cart} = useCart()
+  const totalItem = cart.reduce((sum , item) => sum + item.quantity,0)
+  const totalPrice = cart.reduce((sum , item) => sum + item.quantity * item.price ,0)
+  //handle open card
   return (
-    <div className="p-6">
-
-      {/* Back */}
-      <button className="flex items-center gap-2 text-gray-600 hover:text-black mb-6">
-        <ArrowLeft size={20} />
-        <span
-        onClick={() => navigate("/dashboard")}
-        >Quay lại Dashboard</span>
-      </button>
-
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="flex justify-between items-start mb-8">
+      <div className="bg-white border-b px-6 py-4 flex items-center justify-between sticky top-0 z-10">
         <div>
-          <h1 className="text-2xl">
-            Quản lý đơn hàng
-          </h1>
-
-          <p className="text-gray-500 mt-3 text-lg">
-            Quản lý order và trạng thái món ăn
-          </p>
+          <h1 className="text-xl font-bold">Thực đơn</h1>
+          <p className="text-sm text-gray-500">Chúc bạn ngon miệng!!</p>
         </div>
-
-        <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg">
-          + Tạo đơn hàng
+        <button className="relative bg-orange-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+        onClick={()=>setOpenCart(true)}
+        >
+          <ShoppingCart size={18} />
+          <span>Giỏ hàng</span>
+          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+            {totalItem}
+          </span>
         </button>
       </div>
 
-      {/* Main Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[700px]">
+      <div className="px-6 py-4 max-w-5xl mx-auto w-full">
 
-        {/* Left */}
-        <div className="border rounded-xl p-6">
-          <h2 className="text-3xl font-bold mb-6">
-            Danh sách bàn
-          </h2>
-
-          <div className="grid grid-cols-3 gap-4">
-
-            <button className="h-20 rounded-lg border border-orange-500">
-              Bàn 1
-            </button>
-
-            <button className="h-20 rounded-lg border">
-              Bàn 2
-            </button>
-
-            <button className="h-20 rounded-lg border">
-              Bàn 3
-            </button>
-
-            <button className="h-20 rounded-lg border">
-              Bàn 4
-            </button>
-
-            <button className="h-20 rounded-lg border">
-              Bàn 5
-            </button>
-
-            <button className="h-20 rounded-lg border">
-              Bàn 6
-            </button>
-
-            <button className="h-20 rounded-lg border border-red-300">
-              Bàn 7
-            </button>
-
-            <button className="h-20 rounded-lg border border-red-300">
-              Bàn 8
-            </button>
-
-            <button className="h-20 rounded-lg border">
-              Bàn 9
-            </button>
-
-            <button className="h-20 rounded-lg border">
-              Bàn 10
-            </button>
-
-            <button className="h-20 rounded-lg border">
-              Bàn 11
-            </button>
-
-            <button className="h-20 rounded-lg border">
-              Bàn 12
-            </button>
-
-          </div>
+        {/* Search */}
+        <div className="relative mb-4">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-9 pr-4 py-2 border rounded-lg bg-white text-sm outline-none"
+            placeholder="Tìm món..."
+          />
         </div>
 
-        {/* Right */}
-        <div className="lg:col-span-2 border rounded-xl flex flex-col">
+        {/* Categories */}
+        <div className="flex gap-2 mb-6 overflow-x-auto">
+            {categories.map((cat)=>(
+              <button
+              key={cat}
+              onClick={() => setCategory(cat)}
+              className={`px-4 py-1.5 rounded-full text-sm border whitespace-nowrap transition-colors ${
+                category === cat
+                  ? "bg-orange-500 text-white border-orange-500"
+                  : "bg-white text-gray-700"
+              }`}
+            >
+              {cat}
+            </button>
+            ))}
+        </div>
 
-          {/* Order Header */}
-          <div className="p-6 border-b">
-            <h2 className="text-4xl font-bold">
-              Bàn 1
-            </h2>
-
-            <p className="text-gray-500 mt-2">
-              Trạng thái: Đang phục vụ
-            </p>
-          </div>
-
-          {/* Order Detail */}
-          <div className="flex-1 overflow-auto">
-
-            <table className="w-full">
-              <thead>
-                <tr className="border-b bg-gray-50">
-                  <th className="text-left p-4">Tên món</th>
-                  <th className="text-left p-4">SL</th>
-                  <th className="text-left p-4">Giá</th>
-                  <th className="text-left p-4">Trạng thái</th>
-                  <th className="text-left p-4">Thao tác</th>
-                </tr>
-              </thead>
-
-              <tbody>
-
-                <tr className="border-b">
-                  <td className="p-4">Cơm gà</td>
-                  <td className="p-4">2</td>
-                  <td className="p-4">90.000đ</td>
-
-                  <td className="p-4">
-                    <span className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full">
-                      Chờ xác nhận
-                    </span>
-                  </td>
-
-                  <td className="p-4">
-                    <div className="flex gap-2">
-                      <button className="bg-blue-500 text-white px-3 py-1 rounded">
-                        Sửa
-                      </button>
-
-                      <button className="bg-red-500 text-white px-3 py-1 rounded">
-                        Xóa
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-
-                <tr className="border-b">
-                  <td className="p-4">Trà đào</td>
-                  <td className="p-4">1</td>
-                  <td className="p-4">30.000đ</td>
-
-                  <td className="p-4">
-                    <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full">
-                      Đang nấu
-                    </span>
-                  </td>
-
-                  <td className="p-4">
-                    <div className="flex gap-2">
-                      <button className="bg-blue-500 text-white px-3 py-1 rounded">
-                        Sửa
-                      </button>
-
-                      <button className="bg-red-500 text-white px-3 py-1 rounded">
-                        Xóa
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td className="p-4">Bò lúc lắc</td>
-                  <td className="p-4">1</td>
-                  <td className="p-4">120.000đ</td>
-
-                  <td className="p-4">
-                    <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full">
-                      Hoàn thành
-                    </span>
-                  </td>
-
-                  <td className="p-4">
-                    <div className="flex gap-2">
-                      <button className="bg-blue-500 text-white px-3 py-1 rounded">
-                        Sửa
-                      </button>
-
-                      <button className="bg-red-500 text-white px-3 py-1 rounded">
-                        Xóa
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-
-              </tbody>
-            </table>
-
-          </div>
-
-          {/* Footer */}
-          <div className="border-t p-5">
-
-            <div className="flex justify-between items-center mb-4">
-              <span className="text-xl font-medium">
-                Tổng tiền
-              </span>
-
-              <span className="text-3xl font-bold text-orange-500">
-                240.000đ
-              </span>
-            </div>
-
-            <div className="flex justify-end gap-3">
-
-              <button className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-lg">
-                Thanh toán
-              </button>
-
-              <button className="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-lg">
-                + Thêm món
-              </button>
-
-            </div>
-
-          </div>
-
+        {/* Grid món ăn */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <ListFood></ListFood>
         </div>
 
       </div>
+
+      {/* Cart Summary Footer */}
+      <div className="sticky bottom-0 bg-white border-t px-6 py-4 flex items-center justify-between">
+        <div>
+          <p className="text-sm text-gray-500">{`Tổng :${totalItem} món`}</p>
+          <p className="font-bold text-lg text-orange-500">{`tổng tiền :${totalPrice.toLocaleString("vi-VN")}đ`}</p>
+        </div>
+        <button className="bg-orange-500 text-white px-6 py-2 rounded-lg font-medium"
+        onClick={()=>setOpenCart(true)}
+        >
+          Đặt món
+        </button>
+      </div>
+        {/* Drawer */}
+      <CartDrawer open={openCart} onClose={() => setOpenCart(false)} />
     </div>
-  );
+  )
 }

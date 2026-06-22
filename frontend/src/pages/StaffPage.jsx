@@ -38,6 +38,7 @@ useEffect(()=>{
 const handleSubmit = async(e)=>{
   e.preventDefault()
   const newStaff = await createStaff(form)
+  console.log("newstaff:" , newStaff)
   setListStaff((prev)=>[...prev,newStaff.staff])
 
   setShowModal(false)

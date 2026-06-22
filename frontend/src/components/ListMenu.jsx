@@ -12,7 +12,7 @@ function ListMenu({menu ,deletefood , editfood}) {
                   <td className="p-4">
                     <span className="bg-gray-100 px-2 py-1 rounded text-sm">{menu.category}</span>
                   </td>
-                  <td className="p-4">{menu.price}</td>
+                  <td className="p-4">{menu.price.toLocaleString("vi-VN")}đ</td>
                   <td className="p-4">
                     <span className="bg-green-100 text-green-700 px-2 py-1 rounded text-sm">
                       {menu.isAvailable?"còn món":"hết"}

@@ -39,12 +39,14 @@ export function LoginForm({className,...props}){
       const res = await api.post("/auth/signin" , data)
 
       localStorage.setItem("accessToken", res.data.accessToken)
+      localStorage.setItem("role",res.data.user.role)
+      localStorage.setItem("name", res.data.user.name,)
 
       //check role
       if(res.data.user.role === "admin"){
         navigate("/dashboard")
       }else{
-        navigate("/staff")
+        navigate("/dashboard")
       }
     } catch (error) {
       const message = error.response?.data?.message??"lỗi kết nối"
