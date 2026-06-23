@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router'
-import { LogOut, ShoppingBag, BarChart2, Users, UtensilsCrossed, ClipboardList } from 'lucide-react'
+import { LogOut, ShoppingBag, BarChart2, Users, UtensilsCrossed,ReceiptText } from 'lucide-react'
 import api from '@/lib/axios.js'
 
 export default function Dashboard() {
@@ -61,6 +61,20 @@ export default function Dashboard() {
           </div>
         </div>
       )}
+      {role === "staff" &&(
+        <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
+          <div className="bg-white p-5 rounded-xl shadow">
+            <p className="text-gray-500 text-sm">Bàn đang phục vụ</p>
+            <p className="text-3xl font-bold mt-1">6/12</p>
+            <p className="text-gray-400 text-sm mt-1">6 bàn còn trống</p>
+          </div>
+          <div className="bg-white p-5 rounded-xl shadow">
+            <p className="text-gray-500 text-sm">Món đang chờ</p>
+            <p className="text-3xl font-bold mt-1">8</p>
+            <p className="text-orange-500 text-sm mt-1">Cần xử lý</p>
+          </div>
+        </div>
+      )}
 
       {/* Menu Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -75,19 +89,6 @@ export default function Dashboard() {
           <div>
             <p className="font-semibold" onClick={()=>navigate("/order")}>Đơn Hàng</p>
             <p className="text-sm text-gray-500">Quản lý order</p>
-          </div>
-        </div>
-
-        <div
-          onClick={() => navigate("/menu?table=1")}
-          className="bg-white p-5 rounded-xl shadow hover:shadow-md cursor-pointer flex items-center gap-4"
-        >
-          <div className="bg-blue-100 p-3 rounded-lg">
-            <ClipboardList size={24} className="text-blue-500" />
-          </div>
-          <div>
-            <p className="font-semibold">Order hộ</p>
-            <p className="text-sm text-gray-500">Chọn món cho khách</p>
           </div>
         </div>
 
@@ -129,8 +130,22 @@ export default function Dashboard() {
               <div>
                 <p className="font-semibold">Món Ăn</p>
                 <p className="text-sm text-gray-500">Quản lý thực đơn</p>
-              </div>
+              </div> 
             </div>
+
+            <div
+          onClick={() => navigate("/dashboard/payment")}
+          className="bg-white p-5 rounded-xl shadow hover:shadow-md cursor-pointer flex items-center gap-4"
+        >
+          <div className="bg-blue-100 p-3 rounded-lg">
+            <ReceiptText size={24} className="text-blue-500" />
+          </div>
+          <div>
+            <p className="font-semibold">Thanh Toán</p>
+            <p className="text-sm text-gray-500">Quản Lý Hóa Đơn</p>
+          </div>
+        </div>
+
           </>
         )}
 

@@ -37,6 +37,12 @@ export default function KitchenPage() {
     const handleUpdateStatus = async (orderId, status) => {
         await updateOrderStatus(orderId, status)
         setOrders(prev => prev.map(o => o._id === orderId ? { ...o, status } : o))
+
+        if(status === 'done'){
+            setTimeout(() => {
+                setOrders(prev => prev.filter(o => o._id !== orderId))
+            }, 5000);
+        }
     }
 
     return (

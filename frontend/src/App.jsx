@@ -5,6 +5,7 @@ import OrdersPage from './pages/OrdersPage.jsx'
 import StaffPage from './pages/StaffPage.jsx'
 import MenuPage from './pages/MenuPage.jsx'
 import KitchenPage from './pages/KitchenPage.jsx'
+import PaymentPage from './pages/PaymentPage.jsx'
 import { MainMenuProvider } from './Context/MainMenu/MainMenuProvider.jsx'
 import { CartProvider } from './Context/Cart/CartProvider.jsx'
 
@@ -30,6 +31,7 @@ function App() {
         <Route path='/dashboard/staff' element={<StaffPage></StaffPage>}></Route>
         <Route path='/dashboard/menu' element={<MenuPage></MenuPage>}></Route>
         <Route path='/dashboard/kitchen' element={<KitchenPage></KitchenPage>}></Route>
+        <Route path='/dashboard/payment' element={<PaymentPage></PaymentPage>}></Route>
       </Routes>
     </BrowserRouter>
     </>
