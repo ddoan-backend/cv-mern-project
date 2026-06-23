@@ -11,4 +11,4 @@ const TableSchema = new mongoose.Schema({
     capacity:{type:Number , default:4}
 },{timestamps:true})
 
-export default mongoose.model('table' , TableSchema)
+export default mongoose.model('table' , TableSchema ,'table')

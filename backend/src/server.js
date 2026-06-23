@@ -4,7 +4,7 @@ import { connectDB } from './lib/db.js'
 import authRoute from './routes/authRoutes.js'
 import staffRoute from './routes/staffRoutes.js'
 import MenuRoute from './routes/MenuRoutes.js'
-import OrderRoute from './routes/OrderRoutes.js'
+import TableRoute from './routes/TableRoutes.js'
 import CustommerRoute from './routes/OrderCustomer.js'
 import cookiePaser from 'cookie-parser'
 import { protectdRoute } from './middlewares/authMiddlewares.js'
@@ -42,7 +42,7 @@ io.on('connection', (socket) => {
 app.use('/api/auth' , authRoute)
 app.use('/api/staff' , staffRoute)
 app.use('/api/menu' , MenuRoute)
-app.use('/api/order', OrderRoute)
+app.use('/api/table', TableRoute)
 app.use('/api/custommer',CustommerRoute)
 //private route
 app.get('/api/me', protectdRoute, (req, res) => {

@@ -16,34 +16,105 @@ export const GetFood = async (req, res) => {
 
 
 //
-export const placeOrder = async(req , res)=>{
+export const placeOrder = async (req, res) => {
     try {
-        const {tableId , items} = req.body
+        const { tableId, items } = req.body
 
-        //check table
         const table = await Table.findById(tableId)
-        if(!table){
-            return res.status(404).json({message:"bàn không tồn tại"})
+        if (!table) {
+            return res.status(404).json({ message: "bàn không tồn tại" })
         }
 
-        const totalAmount = items.reduce((sum ,item)=> sum + item.price * item.quantity ,0)
+        // Kiểm tra bàn đã có order chưa
+        const existingOrder = await Order.findOne({
+            table: tableId,
+            status: { $in: ['pending', 'comfirmed'] }
+        })
+
+        if (existingOrder) {
+            // Gộp items vào order cũ
+            items.forEach(newItem => {
+                const existed = existingOrder.item.find(i =>
+                    i.menuItem.toString() === newItem.menuItem
+                )
+                if (existed) {
+                    existed.quantity += newItem.quantity
+                } else {
+                    existingOrder.item.push(newItem)
+                }
+            })
+            existingOrder.totalAmount += items.reduce((sum, i) => sum + i.price * i.quantity, 0)
+            await existingOrder.save()
+
+            const populated = await Order.findById(existingOrder._id)
+                .populate('table', 'tableNumber')
+                .populate('item.menuItem', 'name')
+
+            io.emit('new_order', populated)
+            return res.status(200).json({ message: 'Thêm món thành công', order: populated })
+        }
+
+        // Tạo order mới
+        const totalAmount = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
 
         const order = await Order.create({
-            table:tableId,
-            item:items,
+            table: tableId,
+            item: items,
             totalAmount
         })
 
-        await Table.findByIdAndUpdate(tableId , {status:"occupied"})
+        await Table.findByIdAndUpdate(tableId, { status: "occupied" })
 
         const populatedOrder = await Order.findById(order._id)
             .populate('table', 'tableNumber')
             .populate('item.menuItem', 'name')
 
-        //emit realtie
-        io.emit('new_order',order)
+        io.emit('new_order', populatedOrder)
 
-        res.status(201).json({ message: 'Đặt món thành công', order })
+        res.status(201).json({ message: 'Đặt món thành công', order: populatedOrder })
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
+// Lấy bill theo bàn
+export const getBillByTable = async (req, res) => {
+    try {
+        const { tableId } = req.params
+
+        const order = await Order.findOne({
+            table: tableId,
+            status: { $in: ['pending', 'comfirmed' ,'done'] }
+        })
+        .populate('table', 'tableNumber')
+        .populate('item.menuItem', 'name')
+
+        if (!order) return res.status(404).json({ message: 'Không có đơn nào' })
+
+        res.json(order)
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
+// Thanh toán
+export const checkout = async (req, res) => {
+    try {
+        const { orderId } = req.params
+        const { items } = req.body // items đã điều chỉnh từ frontend
+
+        const totalAmount = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+
+        const order = await Order.findByIdAndUpdate(
+            orderId,
+            { status: 'done', item: items, totalAmount },
+            { new: true }
+        )
+
+        // Bàn về available
+        await Table.findByIdAndUpdate(order.table, { status: 'available' })
+
+        res.json({ message: 'Thanh toán thành công', order })
     } catch (error) {
         res.status(500).json({ message: error.message })
     }
