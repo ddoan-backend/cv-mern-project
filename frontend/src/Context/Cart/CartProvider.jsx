@@ -7,7 +7,7 @@ export function CartProvider({ children }) {
         return saved ? JSON.parse(saved) : []
     })
 
-    // Tự động lưu mỗi khi cart thay đổi
+    // savw cart
     useEffect(() => {
         localStorage.setItem('cart', JSON.stringify(cart))
     }, [cart])

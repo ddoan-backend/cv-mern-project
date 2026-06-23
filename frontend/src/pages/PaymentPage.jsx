@@ -1,7 +1,7 @@
 import { ArrowLeft, Users, Minus, Plus } from "lucide-react"
 import { useNavigate } from "react-router"
 import { useEffect, useState } from "react"
-import { getBillByTable, checkout, getOccupiedTables } from "@/Api/OrderApi.jsx"
+import { getBillByTable, checkout, getOccupiedTables , updateOrderItems } from "@/Api/OrderApi.jsx"
 import { io } from "socket.io-client"
 import { toast } from "sonner"
 
@@ -79,13 +79,19 @@ export default function PaymentPage() {
 
     // Điều chỉnh số lượng
     const handleAdjust = (itemId, delta) => {
-        setOrder(prev => ({
-            ...prev,
-            item: prev.item
-                .map(i => i._id === itemId ? { ...i, quantity: i.quantity + delta } : i)
-                .filter(i => i.quantity > 0)
-        }))
-    }
+    setOrder(prev => ({
+        ...prev,
+        item: prev.item
+            .map(i => i._id === itemId ? { ...i, quantity: i.quantity + delta } : i)
+            .filter(i => i.quantity > 0)
+    }))
+}
+
+// Xác nhận cập nhật 
+    const handleConfirmAdjust = async () => {
+    await updateOrderItems(order._id, order.item)
+    toast.success("Đã cập nhật món!")
+}
 
     const totalAmount = order?.item.reduce((sum, i) => sum + i.price * i.quantity, 0) ?? 0
 
@@ -193,6 +199,12 @@ export default function PaymentPage() {
 
                             {/* Actions */}
                             <div className="flex gap-3">
+                                <button
+                                onClick={handleConfirmAdjust}
+                                className="flex-1 bg-blue-500 text-white py-3 rounded-xl font-medium"
+                                    >
+                                Cập nhật món
+                                </button>
                                 <button className="flex-1 border border-gray-300 text-gray-600 py-3 rounded-xl font-medium"
                                 onClick={handlePrint}
                                 >

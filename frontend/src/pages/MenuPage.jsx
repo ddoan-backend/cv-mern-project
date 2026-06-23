@@ -83,7 +83,7 @@ const handleSubmit = async(e)=>{
   const result = await CreateMenu(formData)
      setListMenu((prev) => [...prev, result.food])
     setShowModal(false)
-    setForm({ name: "", description: "", price: 0, category: "snack", image: "", isAvailable: true })
+    setForm({ name: "", description: "", price: 0, category: "Ăn Vặt", image: "", isAvailable: true })
   toast.success("Thêm món thành công")
   } catch (error) {
     toast.error("Thêm món thất bại ")

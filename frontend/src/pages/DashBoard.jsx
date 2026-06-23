@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router'
-import { LogOut, ShoppingBag, BarChart2, Users, UtensilsCrossed,ReceiptText } from 'lucide-react'
+import { LogOut, ShoppingBag, BarChart2, Users, UtensilsCrossed,ReceiptText ,QrCode } from 'lucide-react'
 import api from '@/lib/axios.js'
 import { useEffect ,useState } from 'react'
 import { getRevenue } from '@/Api/OrderApi.jsx'
@@ -183,6 +183,18 @@ export default function Dashboard() {
             <p className="text-sm text-gray-500">Quản Lý Hóa Đơn</p>
           </div>
         </div>
+
+        <div
+          onClick={() => navigate("/dashboard/table")}
+          className="bg-white p-5 rounded-xl shadow hover:shadow-md cursor-pointer flex items-center gap-4">
+        <div className="bg-teal-100 p-3 rounded-lg">
+        <QrCode size={24} className="text-teal-500" />
+        </div>
+        <div>
+        <p className="font-semibold">Quản lý bàn</p>
+        <p className="text-sm text-gray-500">Tạo & quản lý QR bàn</p>
+        </div>
+      </div>
 
           </>
         )}

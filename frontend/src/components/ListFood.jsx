@@ -18,7 +18,7 @@ function ListFood() {
                 className="w-full h-36 object-cover"
               />
               <div className="p-3">
-                <p className="font-medium text-sm mb-1">{food.name}</p>
+                <p className="font-medium text-sm mb-1 min-h-[48px]">{food.name}</p>
                 <p className="text-orange-500 text-sm font-semibold mb-3">{`${food.price.toLocaleString("vi-VN")}đ`}</p>
                 <button className="w-full flex items-center justify-center gap-1 bg-orange-500 text-white text-sm py-1.5 rounded-lg"
                 onClick={()=>addToCart(food)}

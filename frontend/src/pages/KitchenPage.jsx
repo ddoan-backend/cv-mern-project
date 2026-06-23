@@ -2,7 +2,7 @@ import { CheckCircle, Clock, ChefHat, ArrowLeft } from "lucide-react"
 import { useNavigate } from "react-router"
 import { useEffect, useState } from "react"
 import { io } from "socket.io-client"
-import { updateOrderStatus } from "../Api/OrderApi.jsx"
+import { updateOrderStatus , getKitchenOrders } from "../Api/OrderApi.jsx"
 
 const socket = io(import.meta.env.VITE_API_URL || "http://localhost:3000")
 
@@ -16,21 +16,45 @@ export default function KitchenPage() {
     const navigate = useNavigate()
     const [orders, setOrders] = useState([])
 
-    // Fetch orders khi load
+    // Fetch orders 
+   
     useEffect(() => {
-    socket.on('order_done', ({ orderId }) => {
-        setOrders(prev => prev.filter(o => o._id !== orderId))
-    })
-    return () => socket.off('order_done')
-}, [])
+        const fetchOrders = async () => {
+            try {
+                const data = await getKitchenOrders()
+                setOrders(data)
+            } catch (error) {
+                console.log(error)
+            }
+        }
 
-    // Lắng nghe order mới
-    useEffect(() => {
-        socket.on('new_order', (order) => {
-            setOrders(prev => [order, ...prev])
-        })
-        return () => socket.off('new_order')
+        fetchOrders()
     }, [])
+
+    // Lắng nghe order 
+    useEffect(() => {
+    console.log("Kitchen connected", socket.connected)
+
+    const handleNewOrder = (order) => {
+        setOrders(prev => {
+            if (prev.some(o => o._id === order._id)) return prev
+            return [order, ...prev]
+        })
+    }
+
+    // Thêm order
+    const handleOrderUpdated = (order) => {
+        setOrders(prev => prev.map(o => o._id === order._id ? order : o))
+    }
+
+    socket.on("new_order", handleNewOrder)
+    socket.on("order_updated", handleOrderUpdated)  
+
+    return () => {
+        socket.off("new_order", handleNewOrder)
+        socket.off("order_updated", handleOrderUpdated)  
+    }
+}, [])
 
     const handleUpdateStatus = async (orderId, status) => {
         await updateOrderStatus(orderId, status)

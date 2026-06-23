@@ -12,6 +12,7 @@ export default function CartDrawer({ open  ,onClose }) {
   const tableId = searchParams.get('tableId')
   const totalPrice = cart.reduce((sum , item) =>sum + item.price * item.quantity,0)
 
+  //handle gọi món
   const handlePlaceOrder = async()=>{
     console.log('tableId:', tableId)
     console.log('cart:', cart)
