@@ -63,7 +63,7 @@ export function LoginForm({className,...props}){
         <CardHeader>
           <CardTitle>Đăng nhập tài khoản của bạn</CardTitle>
           <CardDescription>
-            Vui lòng điền tài khoản và mật khẩu
+            acc:Admin , pass:123456 | acc:staff , pass:123456
           </CardDescription>
         </CardHeader>
         <CardContent>
