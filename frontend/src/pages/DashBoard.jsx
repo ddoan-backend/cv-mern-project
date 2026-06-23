@@ -92,7 +92,7 @@ export default function Dashboard() {
             <p className="text-gray-400 text-sm mt-1">{totalTables - occupiedTables} bàn còn trống</p>
         </div>
         <div className="bg-white p-5 rounded-xl shadow">
-            <p className="text-gray-500 text-sm">Món đang chờ</p>
+            <p className="text-gray-500 text-sm">Đơn đang chờ</p>
             <p className="text-3xl font-bold mt-1">{pendingOrders}</p>
             <p className="text-orange-500 text-sm mt-1">Cần xử lý</p>
         </div>
@@ -107,7 +107,7 @@ export default function Dashboard() {
             <p className="text-gray-400 text-sm mt-1">{totalTables - occupiedTables} bàn còn trống</p>
         </div>
         <div className="bg-white p-5 rounded-xl shadow">
-            <p className="text-gray-500 text-sm">Món đang chờ</p>
+            <p className="text-gray-500 text-sm">Đơn đang chờ</p>
             <p className="text-3xl font-bold mt-1">{pendingOrders}</p>
             <p className="text-orange-500 text-sm mt-1">Cần xử lý</p>
         </div>
