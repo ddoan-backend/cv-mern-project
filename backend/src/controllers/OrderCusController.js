@@ -84,7 +84,7 @@ export const getBillByTable = async (req, res) => {
 
         const order = await Order.findOne({
             table: tableId,
-            status: { $in: ['pending', 'comfirmed' ,'done'] }
+            status: { $in: ['pending', 'comfirmed','done'] }
         })
         .populate('table', 'tableNumber')
         .populate('item.menuItem', 'name')
@@ -115,6 +115,65 @@ export const checkout = async (req, res) => {
         await Table.findByIdAndUpdate(order.table, { status: 'available' })
 
         res.json({ message: 'Thanh toán thành công', order })
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
+export const getRevenue = async (req, res) => {
+    try {
+        const now = new Date()
+        
+        const startOfDay = new Date(now.setHours(0,0,0,0))
+        const startOfWeek = new Date(now)
+        startOfWeek.setDate(now.getDate() - now.getDay())
+        startOfWeek.setHours(0,0,0,0)
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+
+        const [day, week, month, history] = await Promise.all([
+            Order.aggregate([
+                { $match: { status: 'done', createdAt: { $gte: startOfDay } } },
+                { $group: { _id: null, total: { $sum: '$totalAmount' } } }
+            ]),
+            Order.aggregate([
+                { $match: { status: 'done', createdAt: { $gte: startOfWeek } } },
+                { $group: { _id: null, total: { $sum: '$totalAmount' } } }
+            ]),
+            Order.aggregate([
+                { $match: { status: 'done', createdAt: { $gte: startOfMonth } } },
+                { $group: { _id: null, total: { $sum: '$totalAmount' } } }
+            ]),
+            // Doanh thu 7 ngày gần nhất cho biểu đồ
+            Order.aggregate([
+                { $match: { status: 'done', createdAt: { $gte: startOfWeek } } },
+                {
+                    $group: {
+                        _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+                        total: { $sum: '$totalAmount' }
+                    }
+                },
+                { $sort: { _id: 1 } }
+            ])
+        ])
+
+        res.json({
+            day: day[0]?.total ?? 0,
+            week: week[0]?.total ?? 0,
+            month: month[0]?.total ?? 0,
+            chart: history
+        })
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
+export const getOrderHistory = async (req, res) => {
+    try {
+        const orders = await Order.find({ status: 'done' })
+            .populate('table', 'tableNumber')
+            .populate('item.menuItem', 'name')
+            .sort({ createdAt: -1 })
+        res.json(orders)
     } catch (error) {
         res.status(500).json({ message: error.message })
     }

@@ -8,6 +8,7 @@ import TableRoute from './routes/TableRoutes.js'
 import CustommerRoute from './routes/OrderCustomer.js'
 import cookiePaser from 'cookie-parser'
 import { protectdRoute } from './middlewares/authMiddlewares.js'
+import AdminOrderRoute from './routes/AdminRoutes.js'
 import { createServer } from 'http'
 import {Server} from 'socket.io'
 import cors from 'cors'
@@ -44,6 +45,7 @@ app.use('/api/staff' , staffRoute)
 app.use('/api/menu' , MenuRoute)
 app.use('/api/table', TableRoute)
 app.use('/api/custommer',CustommerRoute)
+app.use('/api/admin/order', AdminOrderRoute)
 //private route
 app.get('/api/me', protectdRoute, (req, res) => {
     res.status(200).json(req.user)
