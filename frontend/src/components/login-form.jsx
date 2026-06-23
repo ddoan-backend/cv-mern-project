@@ -18,6 +18,7 @@ import {useForm} from 'react-hook-form'
 import {zodResolver} from '@hookform/resolvers/zod'
 import api from '../lib/axios.js'
 import { useNavigate } from 'react-router'
+import { toast } from "sonner"
 
 const signInSchema = z.object({
   name:z.string().min(1 , 'Vui lòng nhập tài khoản'),
@@ -45,10 +46,13 @@ export function LoginForm({className,...props}){
       //check role
       if(res.data.user.role === "admin"){
         navigate("/dashboard")
+        toast.success("Đăng nhập thành công")
       }else{
         navigate("/dashboard")
+        toast.success("Đăng nhập thành công")
       }
     } catch (error) {
+      toast.error("Đăng nhập không thành công ")
       const message = error.response?.data?.message??"lỗi kết nối"
       setError("root", {message})
     }

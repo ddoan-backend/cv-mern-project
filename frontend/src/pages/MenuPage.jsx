@@ -2,6 +2,7 @@ import ListMenu from "../components/ListMenu.jsx";
 import { useNavigate } from "react-router";
 import { useState , useEffect } from "react";
 import { GetMenu , CreateMenu , DeleteMenu ,UpdateMenu} from "@/Api/MenuApi.jsx";
+import { toast } from "sonner";
 
 export default function MenuPage() {
 const [listMenu ,setListMenu] = useState([])
@@ -83,8 +84,11 @@ const handleSubmit = async(e)=>{
      setListMenu((prev) => [...prev, result.food])
     setShowModal(false)
     setForm({ name: "", description: "", price: 0, category: "snack", image: "", isAvailable: true })
+  toast.success("Thêm món thành công")
   } catch (error) {
+    toast.error("Thêm món thất bại ")
     return console.error(error)
+    
   }finally{
     setLoading(false)
   }
@@ -97,6 +101,7 @@ const handleDelete = async(id)=>{
   setListMenu(menu => menu.filter(food =>(
     food._id !== id
   )))
+  toast.success("Đã xóa món ")
 }
 
 //update edit menu
@@ -118,8 +123,10 @@ const handleEditSubmit = async (e) => {
       menu._id === editFood._id ? result.food : menu
     ))
     setShowEditForm(false)
+    toast.success("Đã sửa món")
   } catch (error) {
     console.error(error)
+    toast.error("Sửa món thất bại ")
   }finally{
     setEditLoading(false)
   }

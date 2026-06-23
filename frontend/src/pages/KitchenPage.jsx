@@ -2,7 +2,7 @@ import { CheckCircle, Clock, ChefHat, ArrowLeft } from "lucide-react"
 import { useNavigate } from "react-router"
 import { useEffect, useState } from "react"
 import { io } from "socket.io-client"
-import { getOrders, updateOrderStatus } from "../Api/OrderApi.jsx"
+import { updateOrderStatus } from "../Api/OrderApi.jsx"
 
 const socket = io(import.meta.env.VITE_API_URL || "http://localhost:3000")
 
@@ -18,13 +18,11 @@ export default function KitchenPage() {
 
     // Fetch orders khi load
     useEffect(() => {
-        const fetch = async () => {
-            const orderList = await getOrders()
-            console.log(orderList[0]?.item)
-            setOrders(orderList)
-        }
-        fetch()
-    }, [])
+    socket.on('order_done', ({ orderId }) => {
+        setOrders(prev => prev.filter(o => o._id !== orderId))
+    })
+    return () => socket.off('order_done')
+}, [])
 
     // Lắng nghe order mới
     useEffect(() => {

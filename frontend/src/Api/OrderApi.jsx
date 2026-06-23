@@ -24,3 +24,13 @@ export const getOccupiedTables = async () => {
     const res = await api.get('/table/occupied')
     return res.data
 }
+
+export const getRevenue = async () => {
+    const res = await api.get('/admin/order/revenue')
+    return res.data
+}
+
+export const getOrderHistory = async () => {
+    const res = await api.get('/admin/order/history')
+    return res.data
+}

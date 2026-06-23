@@ -2,6 +2,7 @@ import { X, Minus, Plus, Trash2 } from "lucide-react"
 import { useCart } from "@/Context/Cart/UseCart.js"
 import api from "@/lib/axios.js"
 import { useSearchParams } from "react-router"
+import { toast } from "sonner"
 
 
 
@@ -15,7 +16,7 @@ export default function CartDrawer({ open  ,onClose }) {
     console.log('tableId:', tableId)
     console.log('cart:', cart)
     if(!tableId) return alert("không tìm thấy bàn")
-    if(cart.length === 0) return alert("giỏ hàng trống")
+    if(cart.length === 0) return toast.error("giỏ hàng trống")
 
 
     try {
@@ -27,12 +28,12 @@ export default function CartDrawer({ open  ,onClose }) {
 
       await api.post('/custommer/place-order',{tableId,items})
 
-      alert("Đặt món thành công")
+      toast.success("Đặt món thành công !")
       clearCart()
       onClose()
       
     } catch (error) {
-      alert('Đặt món thất bại!')
+      toast.error("Đặt món thất bại !!")
             console.error(error)
     }
   }

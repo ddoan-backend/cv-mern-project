@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import CrudStaff from "../components/CrudStaff.jsx";
 import {useState , useEffect} from 'react'
 import { getStaff , createStaff , deleteStaff, updateStaff } from "../Api/StaffApi.jsx";
+import { toast } from "sonner";
 
 export default function StaffPage() {
 const navigate = useNavigate()
@@ -50,6 +51,7 @@ const handleSubmit = async(e)=>{
     password:"",
     role:"staff"
   })
+  toast.success("Thêm thành công nhân viên ")
 }
 //handle delete staff
 const handleDelete = async(id)=>{
@@ -59,6 +61,7 @@ const handleDelete = async(id)=>{
   setListStaff((prev)=>prev.filter((staff)=>(
     staff._id !== id
   )))
+  toast.success("Xóa thành công nhân viên ")
 }
 //handle show modal
 const handleShowModal = ()=>{
@@ -79,6 +82,7 @@ const handleEditStaff = async(e)=>{
     staff._id === editstaff._id? updated.staff:staff
   )))
   setShowEditModal(false)
+  toast.success("Sửa thành công nhân viên ")
 }
 
   return (

@@ -6,6 +6,7 @@ import StaffPage from './pages/StaffPage.jsx'
 import MenuPage from './pages/MenuPage.jsx'
 import KitchenPage from './pages/KitchenPage.jsx'
 import PaymentPage from './pages/PaymentPage.jsx'
+import RevenuePage from './pages/RevenuePage.jsx'
 import { MainMenuProvider } from './Context/MainMenu/MainMenuProvider.jsx'
 import { CartProvider } from './Context/Cart/CartProvider.jsx'
 
@@ -32,6 +33,7 @@ function App() {
         <Route path='/dashboard/menu' element={<MenuPage></MenuPage>}></Route>
         <Route path='/dashboard/kitchen' element={<KitchenPage></KitchenPage>}></Route>
         <Route path='/dashboard/payment' element={<PaymentPage></PaymentPage>}></Route>
+        <Route path='/dashboard/revenue' element={<RevenuePage></RevenuePage>}></Route>
       </Routes>
     </BrowserRouter>
     </>

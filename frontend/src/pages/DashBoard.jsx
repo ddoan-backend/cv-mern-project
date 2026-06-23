@@ -1,11 +1,53 @@
 import { useNavigate } from 'react-router'
 import { LogOut, ShoppingBag, BarChart2, Users, UtensilsCrossed,ReceiptText } from 'lucide-react'
 import api from '@/lib/axios.js'
+import { useEffect ,useState } from 'react'
+import { getRevenue } from '@/Api/OrderApi.jsx'
+import { io } from "socket.io-client"
+import { toast } from 'sonner'
 
+const socket = io(import.meta.env.VITE_API_URL || "http://localhost:3000")
 export default function Dashboard() {
   const navigate = useNavigate()
-  const role = localStorage.getItem("role")
-  const name = localStorage.getItem("name")
+    const role = localStorage.getItem("role")
+    const name = localStorage.getItem("name")
+    const [revenue, setRevenue] = useState({ day: 0 })
+    const [occupiedTables, setOccupiedTables] = useState(0)
+    const [totalTables, setTotalTables] = useState(0)
+    const [pendingOrders, setPendingOrders] = useState(0)
+
+    useEffect(() => {
+    if (role === 'admin') getRevenue().then(setRevenue)
+    
+    const fetchStats = () => {
+        api.get('/table/occupied').then(res => setOccupiedTables(res.data.length))
+        api.get('/table/all').then(res => setTotalTables(res.data.length))
+        api.get('/custommer/orders').then(res => {
+            const pending = res.data.filter(o => o.status === 'pending' || o.status === 'comfirmed')
+            setPendingOrders(pending.length)
+        })
+    }
+
+    fetchStats() // render
+
+    // Realtime for new order
+    socket.on('new_order', () => {
+        fetchStats()
+        if (role === 'admin') getRevenue().then(setRevenue)
+    })
+
+    // Realtime for done
+    socket.on('order_done', () => {
+        fetchStats()
+        if (role === 'admin') getRevenue().then(setRevenue)
+    })
+
+    return () => {
+        socket.off('new_order')
+        socket.off('order_done')
+    }
+}, [])
+
 //handle signout
   const handleSignOut = async () => {
   try {
@@ -16,6 +58,7 @@ export default function Dashboard() {
     localStorage.clear()
     navigate("/signin")
   }
+  toast.success("Đã đăng xuất ")
 }
 
   return (
@@ -36,44 +79,39 @@ export default function Dashboard() {
         </button>
       </div>
 
-      {/* Stats - chỉ admin thấy */}
+      {/* Admin */}
       {role === "admin" && (
-        <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white p-5 rounded-xl shadow">
-            <p className="text-gray-500 text-sm">Đơn hôm nay</p>
-            <p className="text-3xl font-bold mt-1">24</p>
-            <p className="text-green-500 text-sm mt-1">+3 so với hôm qua</p>
-          </div>
-          <div className="bg-white p-5 rounded-xl shadow">
+    <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
+        <div className="bg-white p-5 rounded-xl shadow">
             <p className="text-gray-500 text-sm">Doanh thu hôm nay</p>
-            <p className="text-3xl font-bold mt-1">2.4tr</p>
-            <p className="text-green-500 text-sm mt-1">+12% so với hôm qua</p>
-          </div>
-          <div className="bg-white p-5 rounded-xl shadow">
-            <p className="text-gray-500 text-sm">Bàn đang phục vụ</p>
-            <p className="text-3xl font-bold mt-1">6/12</p>
-            <p className="text-gray-400 text-sm mt-1">6 bàn còn trống</p>
-          </div>
-          <div className="bg-white p-5 rounded-xl shadow">
-            <p className="text-gray-500 text-sm">Món đang chờ</p>
-            <p className="text-3xl font-bold mt-1">8</p>
-            <p className="text-orange-500 text-sm mt-1">Cần xử lý</p>
-          </div>
+            <p className="text-3xl font-bold mt-1">{revenue.day.toLocaleString("vi-VN")}đ</p>
         </div>
+        <div className="bg-white p-5 rounded-xl shadow">
+            <p className="text-gray-500 text-sm">Bàn đang phục vụ</p>
+            <p className="text-3xl font-bold mt-1">{occupiedTables}/{totalTables}</p>
+            <p className="text-gray-400 text-sm mt-1">{totalTables - occupiedTables} bàn còn trống</p>
+        </div>
+        <div className="bg-white p-5 rounded-xl shadow">
+            <p className="text-gray-500 text-sm">Món đang chờ</p>
+            <p className="text-3xl font-bold mt-1">{pendingOrders}</p>
+            <p className="text-orange-500 text-sm mt-1">Cần xử lý</p>
+        </div>
+    </div>
       )}
-      {role === "staff" &&(
-        <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white p-5 rounded-xl shadow">
+      {/* staff */}
+      {role === "staff" && (
+    <div className="grid grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
+        <div className="bg-white p-5 rounded-xl shadow">
             <p className="text-gray-500 text-sm">Bàn đang phục vụ</p>
-            <p className="text-3xl font-bold mt-1">6/12</p>
-            <p className="text-gray-400 text-sm mt-1">6 bàn còn trống</p>
-          </div>
-          <div className="bg-white p-5 rounded-xl shadow">
-            <p className="text-gray-500 text-sm">Món đang chờ</p>
-            <p className="text-3xl font-bold mt-1">8</p>
-            <p className="text-orange-500 text-sm mt-1">Cần xử lý</p>
-          </div>
+            <p className="text-3xl font-bold mt-1">{occupiedTables}/{totalTables}</p>
+            <p className="text-gray-400 text-sm mt-1">{totalTables - occupiedTables} bàn còn trống</p>
         </div>
+        <div className="bg-white p-5 rounded-xl shadow">
+            <p className="text-gray-500 text-sm">Món đang chờ</p>
+            <p className="text-3xl font-bold mt-1">{pendingOrders}</p>
+            <p className="text-orange-500 text-sm mt-1">Cần xử lý</p>
+        </div>
+    </div>
       )}
 
       {/* Menu Cards */}
