@@ -23,7 +23,7 @@ export const createMenu = async(req , res)=>{
             image: imageUrl
         })
         return res.status(201).json({
-            message: "Tạo nhân viên thành công" , food
+            message: "Tạo món thành công" , food
         });
     } catch (error) {
         console.log("lỗi:", error.message)

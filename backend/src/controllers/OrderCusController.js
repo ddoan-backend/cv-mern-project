@@ -25,14 +25,14 @@ export const placeOrder = async (req, res) => {
             return res.status(404).json({ message: "bàn không tồn tại" })
         }
 
-        // Kiểm tra bàn đã có order chưa
+        // have table have order ?
         const existingOrder = await Order.findOne({
             table: tableId,
             status: { $in: ['pending', 'comfirmed'] }
         })
 
         if (existingOrder) {
-            // Gộp items vào order cũ
+            // gộp item
             items.forEach(newItem => {
                 const existed = existingOrder.item.find(i =>
                     i.menuItem.toString() === newItem.menuItem
@@ -54,7 +54,7 @@ export const placeOrder = async (req, res) => {
             return res.status(200).json({ message: 'Thêm món thành công', order: populated })
         }
 
-        // Tạo order mới
+        // create table
         const totalAmount = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
 
         const order = await Order.create({
@@ -77,7 +77,7 @@ export const placeOrder = async (req, res) => {
     }
 }
 
-// Lấy bill theo bàn
+// get bill alow tbale
 export const getBillByTable = async (req, res) => {
     try {
         const { tableId } = req.params
@@ -111,7 +111,7 @@ export const checkout = async (req, res) => {
             { new: true }
         )
 
-        // Bàn về available
+        //  available
         await Table.findByIdAndUpdate(order.table, { status: 'available' })
 
         res.json({ message: 'Thanh toán thành công', order })
@@ -143,7 +143,7 @@ export const getRevenue = async (req, res) => {
                 { $match: { status: 'done', createdAt: { $gte: startOfMonth } } },
                 { $group: { _id: null, total: { $sum: '$totalAmount' } } }
             ]),
-            // Doanh thu 7 ngày gần nhất cho biểu đồ
+            // Doanh thu 7 ngày
             Order.aggregate([
                 { $match: { status: 'done', createdAt: { $gte: startOfWeek } } },
                 {
@@ -176,5 +176,22 @@ export const getOrderHistory = async (req, res) => {
         res.json(orders)
     } catch (error) {
         res.status(500).json({ message: error.message })
+    }
+}
+
+export const getKitchenOrders = async (req, res) => {
+    try {
+        const orders = await Order.find({
+            status: { $in: ['pending', 'comfirmed'] }
+        })
+        .populate('table', 'tableNumber')
+        .populate('item.menuItem', 'name')
+        .sort({ createdAt: -1 })
+
+        res.status(200).json(orders)
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        })
     }
 }
