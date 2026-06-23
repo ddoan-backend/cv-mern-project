@@ -13,29 +13,31 @@ export default function OrdersPage() {
   const totalPrice = cart.reduce((sum , item) => sum + item.quantity * item.price ,0)
   //handle open card
   return (
-    <div className="min-h-screen bg-gray-50">
+  <div className="min-h-screen bg-gray-100 flex justify-center">
+    <div className="w-full max-w-[430px] bg-gray-50 min-h-screen flex flex-col">
+      
       {/* Header */}
-<div className="bg-white border-b px-4 py-3 flex items-center justify-between sticky top-0 z-10">
-  <div>
-    <h1 className="text-xl font-bold">Thực đơn</h1>
-    <p className="text-sm text-gray-500">Chúc bạn ngon miệng!!</p>
-  </div>
-  <button 
-    className="relative bg-orange-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
-    onClick={() => setOpenCart(true)}
-  >
-    <ShoppingCart size={18} />
-    <span>Giỏ hàng</span>
-    {totalItem > 0 && (
-      <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
-        {totalItem}
-      </span>
-    )}
-  </button>
-</div>
+      <div className="bg-white border-b px-4 py-3 flex items-center justify-between sticky top-0 z-10">
+        <div>
+          <h1 className="text-xl font-bold">Thực đơn</h1>
+          <p className="text-sm text-gray-500">Chúc bạn ngon miệng!!</p>
+        </div>
+        <button 
+          className="relative bg-orange-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+          onClick={() => setOpenCart(true)}
+        >
+          <ShoppingCart size={18} />
+          <span>Giỏ hàng</span>
+          {totalItem > 0 && (
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+              {totalItem}
+            </span>
+          )}
+        </button>
+      </div>
 
-      <div className="px-6 py-4 max-w-5xl mx-auto w-full">
-
+      {/* Content */}
+      <div className="px-4 py-4 flex-1">
         {/* Search */}
         <div className="relative mb-4">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -48,9 +50,9 @@ export default function OrdersPage() {
         </div>
 
         {/* Categories */}
-        <div className="flex gap-2 mb-6 overflow-x-auto">
-            {categories.map((cat)=>(
-              <button
+        <div className="flex gap-2 mb-6 overflow-x-auto scrollbar-hide">
+          {categories.map((cat) => (
+            <button
               key={cat}
               onClick={() => setCategory(cat)}
               className={`px-4 py-1.5 rounded-full text-sm border whitespace-nowrap transition-colors ${
@@ -61,33 +63,33 @@ export default function OrdersPage() {
             >
               {cat}
             </button>
-            ))}
+          ))}
         </div>
 
         {/* Grid món ăn */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          <ListFood></ListFood>
+        <div className="grid grid-cols-2 gap-4">
+          <ListFood />
         </div>
-
       </div>
 
-      {/* Cart Summary Footer */}
+      {/* Footer */}
       <div className="sticky bottom-0 bg-white border-t px-4 py-3 flex items-center justify-between">
-  <div>
-    <p className="text-sm text-gray-500">Tổng: {totalItem} món</p>
-    <p className="font-bold text-lg text-orange-500">
-      {totalPrice.toLocaleString("vi-VN")}đ
-    </p>
-  </div>
-  <button 
-    className="bg-orange-500 text-white px-6 py-2 rounded-lg font-medium"
-    onClick={() => setOpenCart(true)}
-  >
-    Đặt món
-  </button>
-</div>
-        {/* Drawer */}
+        <div>
+          <p className="text-sm text-gray-500">Tổng: {totalItem} món</p>
+          <p className="font-bold text-lg text-orange-500">
+            {totalPrice.toLocaleString("vi-VN")}đ
+          </p>
+        </div>
+        <button 
+          className="bg-orange-500 text-white px-6 py-2 rounded-lg font-medium"
+          onClick={() => setOpenCart(true)}
+        >
+          Đặt món
+        </button>
+      </div>
+
       <CartDrawer open={openCart} onClose={() => setOpenCart(false)} />
     </div>
-  )
+  </div>
+)
 }
