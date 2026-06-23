@@ -1,4 +1,4 @@
-import {BrowserRouter, Route, Routes ,} from 'react-router'
+import {BrowserRouter, Route, Routes , Navigate} from 'react-router'
 import SigninPage from './pages/SigninPage.jsx'
 import Dashboard from './pages/DashBoard.jsx'
 import OrdersPage from './pages/OrdersPage.jsx'
@@ -21,6 +21,7 @@ function App() {
     <Toaster></Toaster>
     <BrowserRouter>
       <Routes>
+        <Route path='/' element={<Navigate to='/signin' />} />
         <Route path='/signin' element={<SigninPage></SigninPage>}></Route>
         <Route path='/dashboard' element={<Dashboard></Dashboard>}></Route>
         <Route path='/order' element={
