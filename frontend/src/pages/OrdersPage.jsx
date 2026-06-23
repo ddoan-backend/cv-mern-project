@@ -15,21 +15,24 @@ export default function OrdersPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white border-b px-6 py-4 flex items-center justify-between sticky top-0 z-10">
-        <div>
-          <h1 className="text-xl font-bold">Thực đơn</h1>
-          <p className="text-sm text-gray-500">Chúc bạn ngon miệng!!</p>
-        </div>
-        <button className="relative bg-orange-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
-        onClick={()=>setOpenCart(true)}
-        >
-          <ShoppingCart size={18} />
-          <span>Giỏ hàng</span>
-          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
-            {totalItem}
-          </span>
-        </button>
-      </div>
+<div className="bg-white border-b px-4 py-3 flex items-center justify-between sticky top-0 z-10">
+  <div>
+    <h1 className="text-xl font-bold">Thực đơn</h1>
+    <p className="text-sm text-gray-500">Chúc bạn ngon miệng!!</p>
+  </div>
+  <button 
+    className="relative bg-orange-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+    onClick={() => setOpenCart(true)}
+  >
+    <ShoppingCart size={18} />
+    <span>Giỏ hàng</span>
+    {totalItem > 0 && (
+      <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+        {totalItem}
+      </span>
+    )}
+  </button>
+</div>
 
       <div className="px-6 py-4 max-w-5xl mx-auto w-full">
 
@@ -69,17 +72,20 @@ export default function OrdersPage() {
       </div>
 
       {/* Cart Summary Footer */}
-      <div className="sticky bottom-0 bg-white border-t px-6 py-4 flex items-center justify-between">
-        <div>
-          <p className="text-sm text-gray-500">{`Tổng :${totalItem} món`}</p>
-          <p className="font-bold text-lg text-orange-500">{`tổng tiền :${totalPrice.toLocaleString("vi-VN")}đ`}</p>
-        </div>
-        <button className="bg-orange-500 text-white px-6 py-2 rounded-lg font-medium"
-        onClick={()=>setOpenCart(true)}
-        >
-          Đặt món
-        </button>
-      </div>
+      <div className="sticky bottom-0 bg-white border-t px-4 py-3 flex items-center justify-between">
+  <div>
+    <p className="text-sm text-gray-500">Tổng: {totalItem} món</p>
+    <p className="font-bold text-lg text-orange-500">
+      {totalPrice.toLocaleString("vi-VN")}đ
+    </p>
+  </div>
+  <button 
+    className="bg-orange-500 text-white px-6 py-2 rounded-lg font-medium"
+    onClick={() => setOpenCart(true)}
+  >
+    Đặt món
+  </button>
+</div>
         {/* Drawer */}
       <CartDrawer open={openCart} onClose={() => setOpenCart(false)} />
     </div>
